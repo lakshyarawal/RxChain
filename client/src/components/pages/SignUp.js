@@ -1,15 +1,23 @@
 import React from "react";
 import "../../App.css";
-import { useState, setState } from "react";
-import { database } from "../../firebase";
+import { useState } from "react";
+import { database, app } from "../../firebase";
 import { ref, push, child, update } from "firebase/database";
+import { Link, useHistory } from "react-router-dom";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
 
 export default function SignUp() {
   const [firstName, setFirstName] = useState(null);
   const [lastName, setLastName] = useState(null);
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
-  const [confirmPassword, setConfirmPassword] = useState(null);
+
+  const auth = getAuth(app);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -25,18 +33,39 @@ export default function SignUp() {
     if (id === "password") {
       setPassword(value);
     }
-    if (id === "confirmPassword") {
-      setConfirmPassword(value);
-    }
+  };
+
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+      })
+      .catch((error) => {
+        // An error happened.
+      });
   };
 
   const handleSubmit = () => {
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        const user = userCredential.user;
+        console.log(user);
+        alert("Created a new Account");
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        //const errorMessage = error.message;
+        alert(errorCode);
+        // ..
+      });
+
     let obj = {
       firstName: firstName,
       lastName: lastName,
       email: email,
       password: password,
-      confirmPassword: confirmPassword,
     };
     const newPostKey = push(child(ref(database), "posts")).key;
     const updates = {};
@@ -46,7 +75,6 @@ export default function SignUp() {
 
   return (
     <>
-      <h1 className="sign-up">Register for RxChain</h1>
       <div className="form">
         <div className="form-body">
           <div className="username">
@@ -78,7 +106,7 @@ export default function SignUp() {
           </div>
           <div className="email">
             <label className="form__label" for="email">
-              Email{" "}
+              User Email{" "}
             </label>
             <input
               type="email"
@@ -102,23 +130,14 @@ export default function SignUp() {
               placeholder="Password"
             />
           </div>
-          <div className="confirm-password">
-            <label className="form__label" for="confirmPassword">
-              Confirm Password{" "}
-            </label>
-            <input
-              className="form__input"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => handleInputChange(e)}
-              id="confirmPassword"
-              placeholder="Confirm Password"
-            />
-          </div>
         </div>
         <div class="footer">
           <button onClick={() => handleSubmit()} type="submit" class="btn">
             Register
+          </button>
+
+          <button onClick={() => handleLogout()} type="submit" class="btn">
+            Sign Out
           </button>
         </div>
       </div>
