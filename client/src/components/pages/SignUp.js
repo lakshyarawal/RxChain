@@ -18,6 +18,7 @@ export default function SignUp() {
   const [password, setPassword] = useState(null);
 
   const auth = getAuth(app);
+  const history = useHistory();
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;

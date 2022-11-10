@@ -10,6 +10,7 @@ export default function Login() {
   const [password, setPassword] = useState(null);
 
   const auth = getAuth(app);
+  const history = useHistory();
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -27,7 +28,7 @@ export default function Login() {
         // Signed in
         const user = userCredential.user;
         alert("User Signed In: " + user.email);
-        this.props.history.push("/products");
+        history.push("/dashboard");
         // ...
       })
       .catch((error) => {
