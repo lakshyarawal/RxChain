@@ -10,6 +10,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
+import { useAuth } from "../../context/AuthContext";
 
 export default function SignUp() {
   const [firstName, setFirstName] = useState(null);
@@ -19,6 +20,7 @@ export default function SignUp() {
 
   const auth = getAuth(app);
   const history = useHistory();
+  const { register } = useAuth();
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -47,19 +49,15 @@ export default function SignUp() {
   };
 
   const handleSubmit = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
+    register(email, password)
+      .then((res) => {
+        const user = res.user;
         console.log(user);
         alert("Created a new Account");
-        // ...
+        history.push("/dashboard");
       })
       .catch((error) => {
-        const errorCode = error.code;
-        //const errorMessage = error.message;
-        alert(errorCode);
-        // ..
+        alert(error.message);
       });
 
     let obj = {
@@ -116,6 +114,7 @@ export default function SignUp() {
               id="email"
               className="form__input"
               placeholder="Email"
+              required
             />
           </div>
           <div className="password">
@@ -129,6 +128,7 @@ export default function SignUp() {
               onChange={(e) => handleInputChange(e)}
               id="password"
               placeholder="Password"
+              required
             />
           </div>
         </div>

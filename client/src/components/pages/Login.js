@@ -4,6 +4,7 @@ import { useState } from "react";
 import { database, app } from "../../firebase";
 import { Link, useHistory } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
   const [email, setEmail] = useState(null);
@@ -11,6 +12,7 @@ export default function Login() {
 
   const auth = getAuth(app);
   const history = useHistory();
+  const { login } = useAuth();
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -23,6 +25,17 @@ export default function Login() {
   };
 
   const handleLogin = () => {
+    login(email, password)
+      .then((res) => {
+        const user = res.user;
+        console.log(user);
+        alert("Signed in Successfully!");
+        history.push("/dashboard");
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+    /*
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
@@ -36,6 +49,7 @@ export default function Login() {
         //const errorMessage = error.message;
         alert(errorCode);
       });
+      */
   };
 
   return (
@@ -52,6 +66,7 @@ export default function Login() {
           id="email"
           className="form__input"
           placeholder="Email"
+          required
         />
       </div>
       <div className="password">
@@ -65,6 +80,7 @@ export default function Login() {
           onChange={(e) => handleInputChange(e)}
           id="password"
           placeholder="Password"
+          required
         />
       </div>
       <button onClick={() => handleLogin()} type="submit" class="btn">

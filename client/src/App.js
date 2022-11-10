@@ -6,19 +6,22 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Login from "./components/pages/Login";
 import Dashboard from "./components/pages/Dashboard";
 import SignUp from "./components/pages/SignUp";
+import AuthContextProvider from "./context/AuthContext";
 
 function App() {
   return (
     <>
-      <Router>
-        <Navbar />
-        <Switch>
-          <Route path="/" exact component={Home} />
-          <Route path="/login" component={Login} />
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/sign-up" component={SignUp} />
-        </Switch>
-      </Router>
+      <AuthContextProvider>
+        <Router>
+          <Navbar />
+          <Switch>
+            <Route path="/" exact component={Home} />
+            <Route path="/login" component={Login} />
+            <Route path="/dashboard" component={Dashboard} />
+            <Route path="/sign-up" component={SignUp} />
+          </Switch>
+        </Router>
+      </AuthContextProvider>
     </>
   );
 }
