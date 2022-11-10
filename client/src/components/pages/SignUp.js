@@ -38,16 +38,6 @@ export default function SignUp() {
     }
   };
 
-  const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        // Sign-out successful.
-      })
-      .catch((error) => {
-        // An error happened.
-      });
-  };
-
   const handleSubmit = () => {
     register(email, password)
       .then((res) => {
@@ -135,10 +125,6 @@ export default function SignUp() {
         <div class="footer">
           <button onClick={() => handleSubmit()} type="submit" class="btn">
             Register
-          </button>
-
-          <button onClick={() => handleLogout()} type="submit" class="btn">
-            Sign Out
           </button>
         </div>
       </div>

@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "./Button";
-import { Link } from "react-router-dom";
 import "./Navbar.css";
+import { useAuth } from "../context/AuthContext";
+import { Link, useHistory } from "react-router-dom";
 
 function Navbar() {
+  const { logout } = useAuth();
+  const history = useHistory();
   const [click, setClick] = useState(false);
   const [button, setButton] = useState(true);
 
@@ -18,6 +21,19 @@ function Navbar() {
     }
   };
 
+  const handleLogout = () => {
+    setClick(false);
+    logout()
+      .then((res) => {
+        const user = res.user;
+        console.log(user);
+        alert("Signed out Successfully!");
+        history.push("/login");
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
   useEffect(() => {
     showButton();
   }, []);
@@ -53,6 +69,16 @@ function Navbar() {
                 onClick={closeMobileMenu}
               >
                 Dashboard
+              </Link>
+            </li>
+
+            <li className="nav-item">
+              <Link
+                to="/login"
+                className="nav-links"
+                onClick={() => handleLogout()}
+              >
+                Logout
               </Link>
             </li>
 
