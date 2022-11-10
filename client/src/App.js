@@ -2,11 +2,17 @@ import React from "react";
 import Navbar from "./components/Navbar";
 import "./App.css";
 import Home from "./components/pages/Home";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import Login from "./components/pages/Login";
 import Dashboard from "./components/pages/Dashboard";
 import SignUp from "./components/pages/SignUp";
 import AuthContextProvider from "./context/AuthContext";
+import { useAuth } from "./context/AuthContext";
 
 function App() {
   return (
