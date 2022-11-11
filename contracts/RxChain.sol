@@ -16,35 +16,33 @@ contract RxChain is counter{
     bool isvalid=false;
   
     struct PresDetails{
-           string PresDate;
-           address Pat;
-           address Doc;
-           string[] medicines;}
+      string PresDate;
+      address Pat;
+      address Doc;
+      string[] medicines;
+    }
 
     struct Patient{
    
     uint256 age;
+    uint256 balance;
     string name;
     string email;
     address payable Pat;}
 
     struct Doctor{
-
-    uint256 age;
     string name;
     string email;
     //clinic or hospital name
-    string clinic_name;
-    address Doc;}
+    address Doc;
+    uint256 balance;}
 
     struct Pharmacist{
-
-    uint256 age;
     string name;
     string email;
     //store address
-    string store_address;
-    address Pharm;}
+    address Pharm;
+    uint256 balance;}
 
 
 
@@ -94,12 +92,12 @@ contract RxChain is counter{
     }
    
    //Registering the new Doctor
-    function Doctor_Register(address doc_new,string memory _name, uint256 age,string memory _email,string memory _clinic_name) public   
+    function Doctor_Register(address doc_new,string memory _name, uint256 balance,string memory _email) public   
     DoctorListed(doc_new) returns(bool) 
   {
      
-    doctors_list.push(Doctor({name:_name, age:age,email:_email,clinic_name:_clinic_name,Doc:doc_new}));
-    doctor_membership[doc_new]=Doctor({name:_name, age:age,email:_email,clinic_name:_clinic_name,Doc:doc_new});
+    doctors_list.push(Doctor({name:_name,email:_email, balance: balance,Doc:doc_new}));
+    doctor_membership[doc_new]=Doctor({name:_name, balance:balance, email:_email,Doc:doc_new});
     genuine_doctors[doc_new]=true;
       
     return true;
@@ -120,12 +118,12 @@ contract RxChain is counter{
     return true;
   }
    //Registering the new Patient
-   function Patient_Register(address payable pat_new,string memory _name, uint256 age,string memory _email) public   
+   function Patient_Register(address payable pat_new,string memory _name, uint256 _balance, uint256 age,string memory _email) public   
      returns(bool) 
   {
      
-    patients_list.push(Patient({name:_name, age:age,email:_email,Pat:pat_new}));
-    patient_membership[pat_new]=Patient({name:_name,age:age,email:_email,Pat:pat_new});
+    patients_list.push(Patient({name:_name, balance: _balance, age:age,email:_email,Pat:pat_new}));
+    patient_membership[pat_new]=Patient({name:_name, balance: _balance, age:age,email:_email,Pat:pat_new});
     return true;
   }
 
@@ -146,12 +144,12 @@ contract RxChain is counter{
     return true;
   }
    //Registering the new pharmacist
-    function Pharmacy_Register(address pharm_new,string memory _name, uint256 age,string memory _email,string memory _store_address) public   
+    function Pharmacy_Register(address pharm_new,string memory _name, uint256 balance,string memory _email) public   
     onlyPharmacist returns(bool) 
   {
       
-    pharmacists_list.push(Pharmacist({name:_name, age:age,email:_email,store_address:_store_address,Pharm:pharm_new}));
-    pharmacist_membership[pharm_new]=Pharmacist({name:_name, age:age,email:_email,store_address:_store_address,Pharm:pharm_new});
+    pharmacists_list.push(Pharmacist({name:_name, balance:balance,email:_email,Pharm:pharm_new}));
+    pharmacist_membership[pharm_new]=Pharmacist({name:_name, balance:balance,email:_email,Pharm:pharm_new});
   
     return true;
   }
@@ -182,9 +180,6 @@ contract RxChain is counter{
     PresID.increment();
     return true;
   }
-
-
-
 
     //validating the prescription
     function validate_prescription(address _pat, address _doc, uint pres_id) public onlyPharmacist returns (bool) {

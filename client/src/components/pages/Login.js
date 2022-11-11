@@ -1,9 +1,9 @@
 import React from "react";
 import "../../App.css";
 import { useState } from "react";
-import { database, app } from "../../firebase";
-import { Link, useHistory } from "react-router-dom";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { app } from "../../firebase";
+import { useHistory } from "react-router-dom";
+import { getAuth } from "firebase/auth";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {

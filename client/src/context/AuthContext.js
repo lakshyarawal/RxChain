@@ -5,13 +5,23 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
-import { auth } from "../firebase";
+import {
+  collection,
+  addDoc,
+  doc,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { auth, db } from "../firebase";
 
 const AuthContext = createContext({
   currentUser: null,
   login: () => Promise,
   register: () => Promise,
   logout: () => Promise,
+  store: () => Promise,
+  read: () => Promise,
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -44,11 +54,28 @@ export default function AuthContextProvider({ children }) {
     return signOut(auth);
   }
 
+  function store(name, email, address, age) {
+    return addDoc(collection(db, "Patient"), {
+      name: name,
+      email: email,
+      address: address,
+      age: age,
+      balance: 0,
+    });
+  }
+
+  function read(email) {
+    const q = query(collection(db, "Patient"), where("email", "==", email));
+    return getDocs(q);
+  }
+
   const value = {
     currentUser,
     login,
     register,
     logout,
+    store,
+    read,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
