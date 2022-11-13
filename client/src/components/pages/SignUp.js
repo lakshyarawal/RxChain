@@ -52,11 +52,12 @@ export default function SignUp() {
 
   return (
     <>
+      <h2>Patient Register</h2>
       <div className="form">
         <div className="form-body">
           <div className="username">
             <label className="form__label" for="firstName">
-              First Name{" "}
+              Name{" "}
             </label>
             <input
               className="form__input"
@@ -64,7 +65,7 @@ export default function SignUp() {
               value={firstName}
               onChange={(e) => handleInputChange(e)}
               id="firstName"
-              placeholder="First Name"
+              placeholder="Name"
             />
           </div>
           <div className="lastname">

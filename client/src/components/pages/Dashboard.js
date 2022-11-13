@@ -1,9 +1,66 @@
 import React from "react";
 import "../../App.css";
 import { useAuth } from "../../context/AuthContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Web3 from "web3";
+import { RX_ABI, RX_ADDRESS } from "../../wallet/Config";
 
 export default function Dashboard() {
+  const [account, setAccount] = useState(); // state variable to set account.
+
+  useEffect(() => {
+    async function load() {
+      const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+      const accounts = await web3.eth.requestAccounts();
+
+      setAccount(accounts[0]);
+      var contract = new web3.eth.Contract(
+        RX_ABI,
+        RX_ADDRESS,
+        web3.eth.defaultAccount
+      );
+
+      async function Doc_Reg(doc_new, name, age, email, clinic_name) {
+        const ans = await contract.methods
+          .Doctor_Register(doc_new, name, age, email, clinic_name)
+          .call();
+        alert("The answer is: " + String(ans));
+        console.log(typeof ans);
+      }
+      async function Pat_Reg(pat_new, name, age, email) {
+        const ans = await contract.methods
+          .Patient_Register(pat_new, name, age, email)
+          .call();
+        alert("The answer is: " + String(ans));
+        console.log(typeof ans);
+      }
+      async function Pharm_Reg(pharm_new, name, age, email, store_address) {
+        const ans = await contract.methods
+          .Pharmacy_Register(pharm_new, name, age, email, store_address)
+          .call();
+        alert("The answer is: " + String(ans));
+        console.log(typeof ans);
+      }
+
+      async function Pres_Reg(pat_ad, doc_ad, PresDate, medicines) {
+        const ans = await contract.methods
+          .Prescription_Register(pat_ad, doc_ad, PresDate, medicines)
+          .call();
+        alert("The answer is: " + String(ans));
+        console.log(typeof ans);
+      }
+
+      async function Validate_pres(pat_ad, doc_ad) {
+        const ans = await contract.methods
+          .validate_prescription(pat_ad, doc_ad)
+          .call();
+        alert("The answer is: " + String(ans));
+        console.log(typeof ans);
+      }
+    }
+    load();
+  }, []);
+
   const { currentUser } = useAuth();
   const { read } = useAuth();
   const [name, setName] = useState(null);
@@ -43,6 +100,7 @@ export default function Dashboard() {
       <p>ADDRESS: {address}</p>
       <p>EMAIL: {email}</p>
       <p>BALANCE: {balance}</p>
+      <p>Account: {account}</p>
     </>
   );
 }

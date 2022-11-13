@@ -35,21 +35,6 @@ export default function Login() {
       .catch((error) => {
         alert(error.message);
       });
-    /*
-    signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        // Signed in
-        const user = userCredential.user;
-        alert("User Signed In: " + user.email);
-        history.push("/dashboard");
-        // ...
-      })
-      .catch((error) => {
-        const errorCode = error.code;
-        //const errorMessage = error.message;
-        alert(errorCode);
-      });
-      */
   };
 
   return (

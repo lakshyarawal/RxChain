@@ -58,6 +58,28 @@ function Navbar() {
             {!currentUser && (
               <li className="nav-item">
                 <Link
+                  to="/doctor"
+                  className="nav-links"
+                  onClick={closeMobileMenu}
+                >
+                  Doctor
+                </Link>
+              </li>
+            )}
+            {!currentUser && (
+              <li className="nav-item">
+                <Link
+                  to="/pharmacy"
+                  className="nav-links"
+                  onClick={closeMobileMenu}
+                >
+                  Pharmacy
+                </Link>
+              </li>
+            )}
+            {!currentUser && (
+              <li className="nav-item">
+                <Link
                   to="/login"
                   className="nav-links"
                   onClick={closeMobileMenu}
@@ -96,14 +118,14 @@ function Navbar() {
                   className="nav-links-mobile"
                   onClick={closeMobileMenu}
                 >
-                  Sign Up
+                  User Register
                 </Link>
               </li>
             )}
           </ul>
 
           {!currentUser && button && (
-            <Button buttonStyle="btn--outline">SIGN UP</Button>
+            <Button buttonStyle="btn--outline">User Register</Button>
           )}
         </div>
       </nav>
