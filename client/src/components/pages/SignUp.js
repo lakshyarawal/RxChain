@@ -1,47 +1,66 @@
 import React from "react";
 import "../../App.css";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { app, db } from "../../firebase";
 import { Link, useHistory } from "react-router-dom";
 import { getAuth } from "firebase/auth";
 import { useAuth } from "../../context/AuthContext";
+import Web3 from "web3";
+import { RX_ABI, RX_ADDRESS } from "../../wallet/Config";
 
 export default function SignUp() {
-  const [firstName, setFirstName] = useState(null);
-  const [address, setAddress] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [age, setAge] = useState(null);
-  const [password, setPassword] = useState(null);
-
   const auth = getAuth(app);
   const history = useHistory();
   const { register, store } = useAuth();
+  const addRef = useRef(null);
+  const nameRef = useRef(null);
+  const ageRef = useRef(null);
+  const emailRef = useRef(null);
+  const passwordRef = useRef(null);
+  const [account, setAccount] = useState(null);
+  const [contract, setContract] = useState();
 
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    if (id === "firstName") {
-      setFirstName(value);
-    }
-    if (id === "address") {
-      setAddress(value);
-    }
-    if (id === "email") {
-      setEmail(value);
-    }
-    if (id === "age") {
-      setAge(value);
-    }
-    if (id === "password") {
-      setPassword(value);
-    }
-  };
+  useEffect(() => {
+    async function load() {
+      const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+      const accounts = await web3.eth.requestAccounts();
 
-  const handleSubmit = () => {
-    register(email, password)
+      setAccount(accounts[0]);
+      // Instantiate smart contract using ABI and address.
+      const contract = new web3.eth.Contract(RX_ABI, RX_ADDRESS);
+      // set contract list to state variable.
+      setContract(contract);
+    }
+    load();
+  }, []);
+
+  const handlePatient = async () => {
+    if (contract) {
+      const ans = await contract.methods
+        .Patient_Register(
+          addRef.current.value,
+          nameRef.current.value,
+          ageRef.current.value,
+          emailRef.current.value
+        )
+        .call();
+      alert("The answer is: " + String(ans));
+      console.log(typeof ans);
+      console.log("Patient Added");
+      //console.log(typeof ans);
+    } else {
+      console.log("contract Not found");
+    }
+    register(emailRef.current.value, passwordRef.current.value)
       .then((res) => {
         const user = res.user;
         console.log(user);
-        store(firstName, email, address, age);
+        store(
+          nameRef.current.value,
+          emailRef.current.value,
+          addRef.current.value,
+          ageRef.current.value
+        );
         alert("Created a new Account");
         history.push("/dashboard");
       })
@@ -62,8 +81,7 @@ export default function SignUp() {
             <input
               className="form__input"
               type="text"
-              value={firstName}
-              onChange={(e) => handleInputChange(e)}
+              ref={nameRef}
               id="firstName"
               placeholder="Name"
             />
@@ -74,8 +92,7 @@ export default function SignUp() {
             </label>
             <input
               type="text"
-              value={address}
-              onChange={(e) => handleInputChange(e)}
+              ref={addRef}
               name=""
               id="address"
               className="form__input"
@@ -88,8 +105,7 @@ export default function SignUp() {
             </label>
             <input
               type="email"
-              value={email}
-              onChange={(e) => handleInputChange(e)}
+              ref={emailRef}
               id="email"
               className="form__input"
               placeholder="Email"
@@ -102,8 +118,7 @@ export default function SignUp() {
             </label>
             <input
               type="number"
-              value={age}
-              onChange={(e) => handleInputChange(e)}
+              ref={ageRef}
               id="age"
               className="form__input"
               placeholder="Age"
@@ -117,8 +132,7 @@ export default function SignUp() {
             <input
               className="form__input"
               type="password"
-              value={password}
-              onChange={(e) => handleInputChange(e)}
+              ref={passwordRef}
               id="password"
               placeholder="Password"
               required
@@ -126,7 +140,7 @@ export default function SignUp() {
           </div>
         </div>
         <div class="footer">
-          <button onClick={() => handleSubmit()} type="submit" class="btn">
+          <button onClick={handlePatient} type="submit" class="btn">
             Register
           </button>
         </div>

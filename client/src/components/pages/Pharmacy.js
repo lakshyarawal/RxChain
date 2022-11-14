@@ -1,48 +1,76 @@
-import React from "react";
 import "../../App.css";
-import { useState } from "react";
-import { useHistory } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+import React from "react";
+import { useState, useEffect, useRef } from "react";
+import Web3 from "web3";
+import { RX_ABI, RX_ADDRESS } from "../../wallet/Config";
 
 export default function Pharmacy() {
-  const [address, setAddress] = useState(null);
-  const [_name, setName] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [store, setStore] = useState(null);
-  const [password, setPassword] = useState(null);
-  const history = useHistory();
-  const { login } = useAuth();
+  const addRef = useRef(null);
+  const patAddRef = useRef(null);
+  const docAddRef = useRef(null);
+  const nameRef = useRef(null);
+  const storeRef = useRef(null);
+  const emailRef = useRef(null);
+  const [account, setAccount] = useState(null);
+  const [presAns, setPresAns] = useState(null);
+  const [contract, setContract] = useState();
 
-  const handleInputChange = (e) => {
-    const { id, value } = e.target;
-    if (id === "address") {
-      setAddress(value);
+  useEffect(() => {
+    async function load() {
+      const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
+      const accounts = await web3.eth.requestAccounts();
+
+      setAccount("0xc08167185883E1358503B8B4FF776c6848942871");
+      // Instantiate smart contract using ABI and address.
+      const contract = new web3.eth.Contract(
+        RX_ABI,
+        RX_ADDRESS,
+        "0xc08167185883E1358503B8B4FF776c6848942871"
+      );
+      // set contract list to state variable.
+      setContract(contract);
     }
-    if (id === "_name") {
-      setName(_name);
-    }
-    if (id === "email") {
-      setEmail(email);
-    }
-    if (id === "store") {
-      setStore(store);
-    }
-    if (id === "password") {
-      setPassword(value);
+    load();
+  }, []);
+
+  const handlePharmacy = async () => {
+    if (contract) {
+      const ans = await contract.methods
+        .Pharmacy_Register(
+          addRef.current.value,
+          nameRef.current.value,
+          emailRef.current.value,
+          storeRef.current.value
+        )
+        .call();
+      alert("The answer is: " + String(ans));
+      console.log("Pharmacy Added");
+      //console.log(typeof ans);
+    } else {
+      console.log("contract Not found");
     }
   };
+  const logRx = () => {
+    console.log(presAns);
+  };
 
-  const handleLogin = () => {
-    login(address, password)
-      .then((res) => {
-        const user = res.user;
-        console.log(user);
-        alert("Signed in Successfully!");
-        history.push("/dashboard");
-      })
-      .catch((error) => {
-        alert(error.message);
-      });
+  const validateRx = async () => {
+    if (contract) {
+      console.log(patAddRef.current.value);
+      console.log(docAddRef.current.value);
+      setPresAns(
+        await contract.methods
+          .validate_prescription(
+            patAddRef.current.value,
+            docAddRef.current.value
+          )
+          .call()
+      );
+      console.log("Prescription Validated");
+      //console.log(typeof ans);
+    } else {
+      console.log("contract Not found");
+    }
   };
 
   return (
@@ -55,8 +83,7 @@ export default function Pharmacy() {
           </label>
           <input
             type="string"
-            value={address}
-            onChange={(e) => handleInputChange(e)}
+            ref={addRef}
             id="address"
             className="form__input"
             placeholder="Address"
@@ -69,8 +96,7 @@ export default function Pharmacy() {
           </label>
           <input
             type="string"
-            value={_name}
-            onChange={(e) => handleInputChange(e)}
+            ref={nameRef}
             id="_name"
             className="form__input"
             placeholder="Pharmacy Name"
@@ -83,8 +109,7 @@ export default function Pharmacy() {
           </label>
           <input
             type="email"
-            value={email}
-            onChange={(e) => handleInputChange(e)}
+            ref={emailRef}
             id="email"
             className="form__input"
             placeholder="Email"
@@ -97,26 +122,52 @@ export default function Pharmacy() {
           </label>
           <input
             type="string"
-            value={store}
-            onChange={(e) => handleInputChange(e)}
-            id="email"
+            ref={storeRef}
+            id="store"
             className="form__input"
             placeholder="Store Address"
             required
           />
         </div>
       </div>
-      <button onClick={() => handleLogin()} type="submit" class="btn">
-        Register
+      <button onClick={handlePharmacy} type="submit" class="btn">
+        Register Pharmacy
       </button>
 
       <h2>Validate Pres</h2>
-      <div id="frm5" onSubmit="Validate_pres()">
-        <b>Patient Address</b>:{" "}
-        <input type="string" name="add" id="Pat_add"></input>
-        <b>Doctor Address</b>:{" "}
-        <input type="string" name="name" id="Doc_ad"></input>
-        <input type="button" onclick="Validate_pres()" value="Validate"></input>
+      <div id="frm5">
+        <div className="email">
+          <label className="form__label" for="pat_address">
+            Patient Metamask Address:{" "}
+          </label>
+          <input
+            type="string"
+            ref={patAddRef}
+            id="pat_address"
+            className="form__input"
+            placeholder="Patient Address"
+            required
+          />
+        </div>
+        <div className="email">
+          <label className="form__label" for="doc_address">
+            Doctor Metamask Address:{" "}
+          </label>
+          <input
+            type="string"
+            ref={docAddRef}
+            id="doc_address"
+            className="form__input"
+            placeholder="Doctor Address"
+            required
+          />
+        </div>
+        <button onClick={validateRx} type="submit" class="btn">
+          Validate Prescription
+        </button>
+        <button onClick={logRx} type="submit" class="btn">
+          Log Prescription
+        </button>
       </div>
     </>
   );

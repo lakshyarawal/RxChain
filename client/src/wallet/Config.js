@@ -1,4 +1,4 @@
-export const RX_ADDRESS = "0x9a6d7c811559157506c4B739aDE4E383f07EfA50";
+export const RX_ADDRESS = "0xDBB914c776330fbCf95dAD1958Dd0D44aF16C7c0";
 
 export const RX_ABI = [
   {
@@ -11,7 +11,7 @@ export const RX_ABI = [
     inputs: [
       {
         indexed: false,
-        internalType: "address payable",
+        internalType: "address",
         name: "doc_new",
         type: "address",
       },
@@ -54,7 +54,7 @@ export const RX_ABI = [
     inputs: [
       {
         indexed: false,
-        internalType: "address payable",
+        internalType: "address",
         name: "doc_new",
         type: "address",
       },
@@ -445,7 +445,7 @@ export const RX_ABI = [
         type: "address",
       },
       {
-        internalType: "address payable",
+        internalType: "address",
         name: "Doc",
         type: "address",
       },
@@ -502,7 +502,7 @@ export const RX_ABI = [
   {
     inputs: [
       {
-        internalType: "address payable",
+        internalType: "address",
         name: "doc_new",
         type: "address",
       },
@@ -541,7 +541,7 @@ export const RX_ABI = [
   {
     inputs: [
       {
-        internalType: "address payable",
+        internalType: "address",
         name: "doc_new",
         type: "address",
       },
@@ -671,7 +671,7 @@ export const RX_ABI = [
         type: "address",
       },
       {
-        internalType: "address payable",
+        internalType: "address",
         name: "_Doc",
         type: "address",
       },
@@ -705,7 +705,7 @@ export const RX_ABI = [
         type: "address",
       },
       {
-        internalType: "address payable",
+        internalType: "address",
         name: "_doc",
         type: "address",
       },
@@ -716,11 +716,6 @@ export const RX_ABI = [
         internalType: "bool",
         name: "",
         type: "bool",
-      },
-      {
-        internalType: "uint256[]",
-        name: "",
-        type: "uint256[]",
       },
     ],
     stateMutability: "nonpayable",

@@ -19,44 +19,6 @@ export default function Dashboard() {
         RX_ADDRESS,
         web3.eth.defaultAccount
       );
-
-      async function Doc_Reg(doc_new, name, age, email, clinic_name) {
-        const ans = await contract.methods
-          .Doctor_Register(doc_new, name, age, email, clinic_name)
-          .call();
-        alert("The answer is: " + String(ans));
-        console.log(typeof ans);
-      }
-      async function Pat_Reg(pat_new, name, age, email) {
-        const ans = await contract.methods
-          .Patient_Register(pat_new, name, age, email)
-          .call();
-        alert("The answer is: " + String(ans));
-        console.log(typeof ans);
-      }
-      async function Pharm_Reg(pharm_new, name, age, email, store_address) {
-        const ans = await contract.methods
-          .Pharmacy_Register(pharm_new, name, age, email, store_address)
-          .call();
-        alert("The answer is: " + String(ans));
-        console.log(typeof ans);
-      }
-
-      async function Pres_Reg(pat_ad, doc_ad, PresDate, medicines) {
-        const ans = await contract.methods
-          .Prescription_Register(pat_ad, doc_ad, PresDate, medicines)
-          .call();
-        alert("The answer is: " + String(ans));
-        console.log(typeof ans);
-      }
-
-      async function Validate_pres(pat_ad, doc_ad) {
-        const ans = await contract.methods
-          .validate_prescription(pat_ad, doc_ad)
-          .call();
-        alert("The answer is: " + String(ans));
-        console.log(typeof ans);
-      }
     }
     load();
   }, []);
