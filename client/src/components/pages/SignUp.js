@@ -7,6 +7,7 @@ import { getAuth } from "firebase/auth";
 import { useAuth } from "../../context/AuthContext";
 import Web3 from "web3";
 import { RX_ABI, RX_ADDRESS } from "../../wallet/Config";
+import { load } from "../../wallet/Connector";
 
 export default function SignUp() {
   const auth = getAuth(app);
@@ -19,19 +20,16 @@ export default function SignUp() {
   const passwordRef = useRef(null);
   const [account, setAccount] = useState(null);
   const [contract, setContract] = useState();
+  const [refresh, setRefresh] = useState(true);
 
   useEffect(() => {
-    async function load() {
-      const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
-      const accounts = await web3.eth.requestAccounts();
-
-      setAccount(accounts[0]);
-      // Instantiate smart contract using ABI and address.
-      const contract = new web3.eth.Contract(RX_ABI, RX_ADDRESS);
-      // set contract list to state variable.
-      setContract(contract);
-    }
-    load();
+    if (!refresh) return;
+    setRefresh(false);
+    console.log("loading Account");
+    load().then((e) => {
+      setAccount(e.addressAccount);
+      setContract(e.todoContract);
+    });
   }, []);
 
   const handlePatient = async () => {

@@ -1,6 +1,6 @@
-import RxChainJSON from "../../../build/contracts/RxChain.json";
 import Web3 from "web3";
-var contract = require("@truffle/contract");
+import { RX_ABI, RX_ADDRESS } from "./Config";
+const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
 
 export const load = async () => {
   await loadWeb3();
@@ -13,10 +13,8 @@ export const load = async () => {
 };
 
 const loadContract = async (addressAccount) => {
-  const theContract = contract(RxChainJSON);
-  theContract.setProvider(web3.eth.currentProvider);
-  const RxContract = await theContract.deployed();
-  const tasks = await loadTasks(RxContract, addressAccount);
+  const RxContract = new web3.eth.Contract(RX_ABI, RX_ADDRESS);
+  const tasks = "";
 
   return { RxContract: RxContract, tasks };
 };
@@ -29,10 +27,10 @@ const loadAccount = async () => {
 const loadWeb3 = async () => {
   // Modern dapp browsers...
   if (window.ethereum) {
-    window.web3 = new Web3(ethereum);
+    window.web3 = new Web3(window.ethereum);
     try {
       // Request account access if needed
-      await ethereum.enable();
+      await window.ethereum.enable();
       // Acccounts now exposed
       web3.eth.sendTransaction({
         /* ... */

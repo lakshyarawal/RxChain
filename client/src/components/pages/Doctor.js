@@ -46,7 +46,8 @@ export default function Doctor() {
           nameRef.current.value,
           ageRef.current.value,
           emailRef.current.value,
-          clinicRef.current.value
+          clinicRef.current.value,
+          { from: account }
         )
         .call();
       alert("The answer is: " + String(ans));

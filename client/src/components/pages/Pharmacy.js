@@ -20,13 +20,9 @@ export default function Pharmacy() {
       const web3 = new Web3(Web3.givenProvider || "http://localhost:8545");
       const accounts = await web3.eth.requestAccounts();
 
-      setAccount("0xc08167185883E1358503B8B4FF776c6848942871");
+      setAccount(accounts[0]);
       // Instantiate smart contract using ABI and address.
-      const contract = new web3.eth.Contract(
-        RX_ABI,
-        RX_ADDRESS,
-        "0xc08167185883E1358503B8B4FF776c6848942871"
-      );
+      const contract = new web3.eth.Contract(RX_ABI, RX_ADDRESS, account);
       // set contract list to state variable.
       setContract(contract);
     }

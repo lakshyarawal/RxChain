@@ -6,7 +6,14 @@ import Web3 from "web3";
 import { RX_ABI, RX_ADDRESS } from "../../wallet/Config";
 
 export default function Dashboard() {
-  const [account, setAccount] = useState(); // state variable to set account.
+  const [account, setAccount] = useState();
+  const { currentUser } = useAuth();
+  const { read } = useAuth();
+  const [name, setName] = useState(null);
+  const [address, setAddress] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [age, setAge] = useState(null);
+  const [_balance, setBalance] = useState(null);
 
   useEffect(() => {
     async function load() {
@@ -19,17 +26,11 @@ export default function Dashboard() {
         RX_ADDRESS,
         web3.eth.defaultAccount
       );
+
+      setBalance(100);
     }
     load();
   }, []);
-
-  const { currentUser } = useAuth();
-  const { read } = useAuth();
-  const [name, setName] = useState(null);
-  const [address, setAddress] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [age, setAge] = useState(null);
-  const [balance, setBalance] = useState(null);
 
   let user_email = "";
   if (currentUser) {
@@ -45,7 +46,9 @@ export default function Dashboard() {
             setAddress(curr_user["address"]);
             setEmail(curr_user["email"]);
             setAge(curr_user["age"]);
-            setBalance(curr_user["balance"]);
+            const web3 = new Web3(
+              Web3.givenProvider || "http://localhost:8545"
+            );
           }
         });
       })
@@ -61,7 +64,7 @@ export default function Dashboard() {
       <p>AGE: {age}</p>
       <p>ADDRESS: {address}</p>
       <p>EMAIL: {email}</p>
-      <p>BALANCE: {balance}</p>
+      <p>BALANCE: {_balance}</p>
       <p>Account: {account}</p>
     </>
   );
